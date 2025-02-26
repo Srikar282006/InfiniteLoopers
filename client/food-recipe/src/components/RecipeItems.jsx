@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useLoaderData, useNavigate } from 'react-router-dom'
 import foodImg from '../assets/foodRecipe.png'
 import { BsStopwatchFill } from "react-icons/bs";
+import { FaShare } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa6";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
@@ -35,32 +36,56 @@ export default function RecipeItems() {
         setIsFavRecipe(pre => !pre)
     }
 
+    const handleShare=(item)=>{
+        const shareUrl = `http://localhost:3000/recipe/${item._id}`;
+    const shareText = `Check out this delicious recipe: ${item.title}`;
+
+    if (navigator.share) {
+      navigator.share({
+        title: item.title,
+        text: shareText,
+        url: shareUrl,
+      })
+        .then(() => console.log('Successful share'))
+        .catch((error) => console.log('Error sharing', error));
+    } else {
+      navigator.clipboard.writeText(`${shareText}\n${shareUrl}`);
+      alert('Recipe link copied to clipboard!');
+    }
+    }
+
     return (
         <>
-            <div className='card-container'>
-                {
-                    allRecipes?.map((item, index) => {
-                        return (
-                            <div key={index} className='card'onDoubleClick={()=>navigate(`/recipe/${item._id}`)}>
-                                <img src={`http://localhost:5000/images/${item.coverImage}`} width="120px" height="100px"></img>
-                                <div className='card-body'>
-                                    <div className='title'>{item.title}</div>
-                                    <div className='icons'>
-                                        <div className='timer'><BsStopwatchFill />{item.time}</div>
-                                        {(!path) ? <FaHeart onClick={() => favRecipe(item)}
-                                            style={{ color: (favItems.some(res => res._id === item._id)) ? "red" : "" }} /> :
-                                            <div className='action'>
-                                                <Link to={`/editRecipe/${item._id}`} className="editIcon"><FaEdit /></Link>
-                                                <MdDelete onClick={() => onDelete(item._id)} className='deleteIcon' />
-                                            </div>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        )
-                    })
-                }
+             <div className='card-container'>
+        {allRecipes?.map((item, index) => (
+          <div key={index} className='card' onDoubleClick={() => navigate(`/recipe/${item._id}`)}>
+            <img src={`http://localhost:5000/images/${item.coverImage}`} width='120px' height='100px' alt={item.title} />
+            <div className='card-body'>
+              <div className='title'>{item.title}</div>
+              <div className='icons'>
+                <div className='timer'>
+                  <BsStopwatchFill />
+                  {item.time}
+                </div>
+                {!path ? (
+                  <FaHeart
+                    onClick={() => favRecipe(item)}
+                    style={{ color: favItems.some((res) => res._id === item._id) ? 'red' : '' }}
+                  />
+                ) : (
+                  <div className='action'>
+                    <Link to={`/editRecipe/${item._id}`} className='editIcon'>
+                      <FaEdit />
+                    </Link>
+                    <MdDelete onClick={() => onDelete(item._id)} className='deleteIcon' />
+                  </div>
+                )}
+                <FaShare onClick={() => handleShare(item)} /> {/* Add the share icon */}
+              </div>
             </div>
+          </div>
+        ))}
+      </div>
         </>
     )
 }
