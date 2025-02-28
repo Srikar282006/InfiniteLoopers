@@ -92,24 +92,41 @@ section{
   bottom: 0;
 }
 
-.card-container{
-  width: 80%;
+.card-container {
+  width: 90%;
   margin: auto;
   display: grid;
-  gap:2.5rem;
-  grid-template-columns: repeat(auto-fit,13rem);
-  cursor:pointer
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Adjust grid */
+  gap: 1rem; /* Reduce spacing between cards */
+  justify-content: center;
 }
 
-.card{
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  text-align: center;
-  border-radius: 5px;
+
+.card img {
+  width: 100%;
+  height: 300px; /* Adjust this if needed */
+  object-fit: cover;
+  display: block; /* Remove unwanted inline spacing */
 }
 
-.card-body{
+
+
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Ensure content aligns properly */
+  width: 100%;
+  max-width: 250px;
+  overflow: hidden; /* Prevent spacing issues */
+}
+
+
+.card-body {
   background-color: #d4f6e8;
+  min-height: 100px;
   padding: 1rem;
+  margin-top: 0; /* Remove any extra margin */
 }
 
 .card-body .title{
